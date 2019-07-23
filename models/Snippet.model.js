@@ -16,10 +16,13 @@ const shortid = require('shortid');
 
 /* Create */
 /**
- *
+ * Inserts a new snippet into the db
+ * @param {Snippet} newSnippet - the data to create the snippet with
+ * @returns {Promise<Snippet>} the created snippet
  */
 exports.insert = async ({ author, code, title, description, language }) => {
   try {
+    if (!author || !code || !title || !description || !language) throw Error('Missing Properties!');
     // read snippets.json
     const dbPath = path.join(__dirname, '..', 'db', 'snippets.json');
     const snippets = JSON.parse(await fs.readFile(dbPath));
@@ -38,7 +41,8 @@ exports.insert = async ({ author, code, title, description, language }) => {
       favorites: 0,
     });
     // write back to the file
-    return fs.writeFile(dbPath, JSON.stringify(snippets));
+    await fs.writeFile(dbPath, JSON.stringify(snippets));
+    return snippets[snippets.length - 1];
   } catch (err) {
     console.log(err);
     throw err;
