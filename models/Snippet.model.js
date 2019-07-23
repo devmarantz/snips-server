@@ -1,5 +1,6 @@
 const fs = require('fs').promises;
 const path = require('path');
+const shortid = require('shortid');
 
 /**
  * @typedef {Object} Snippet
@@ -14,6 +15,36 @@ const path = require('path');
  */
 
 /* Create */
+/**
+ *
+ */
+exports.insert = async ({ author, code, title, description, language }) => {
+  try {
+    // read snippets.json
+    const dbPath = path.join(__dirname, '..', 'db', 'snippets.json');
+    const snippets = JSON.parse(await fs.readFile(dbPath));
+    // grab data from newSnippet (validate)
+    // make newSnippet a proper object
+    // generate default data (id, comments, favorites)
+    // push that object into snippets
+    snippets.push({
+      id: shortid.generate(),
+      author,
+      code,
+      title,
+      description,
+      language,
+      comments: [],
+      favorites: 0,
+    });
+    // write back to the file
+    return fs.writeFile(dbPath, JSON.stringify(snippets));
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+};
+
 /* Read */
 /**
  * Selects snippets from db.
