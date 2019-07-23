@@ -4,7 +4,13 @@ const path = require('path');
 /**
  * @typedef {Object} Snippet
  * @property {string} id
- * @property {strin}
+ * @property {string} author
+ * @property {string} code
+ * @property {string} title
+ * @property {string} description
+ * @property {string} language
+ * @property {string[]} comments
+ * @property {number} favorites
  */
 
 /* Create */
