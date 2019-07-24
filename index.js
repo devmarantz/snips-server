@@ -5,8 +5,8 @@ async function testSnippetInsert() {
   // console.log(snippets);
   try {
     const newSnippet = await Snippet.insert({
-      author: 'Devon',
-      code: 'code code code',
+      author: 'Noname',
+      code: 'Diddy Bop',
       title: 'test.js',
       description: 'This works great!',
       language: 'javascript',
@@ -23,5 +23,16 @@ async function testSnippetSelect() {
   console.log(snippets);
 }
 
+async function testSnippetDelete(id) {
+  try {
+    const snippets = await Snippet.delete(id);
+    console.log(snippets);
+  } catch (err) {
+    console.log(err);
+  }
+}
+
 // testSnippetSelect();
-testSnippetInsert();
+// testSnippetInsert();
+testSnippetDelete('x-pUVbP0c');
+//

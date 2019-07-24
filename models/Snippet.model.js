@@ -41,7 +41,7 @@ exports.insert = async ({ author, code, title, description, language }) => {
       favorites: 0,
     });
     // write back to the file
-    writeJsonToDb('snippets', JSON.stringify(snippets));
+    await writeJsonToDb('snippets', snippets);
     return snippets[snippets.length - 1];
   } catch (err) {
     console.log(err);
@@ -72,8 +72,28 @@ exports.select = async (query = {}) => {
 
 /* Update */
 /* Delete */
-exports.delete = id => {
-  // 1. Read in the db file
-  // 2. filter snippets for everything except snippet.id === id
-  // 3. write the file
+exports.delete = async id => {
+  try {
+    // 1. Read in the db file
+    const snippets = await readJsonFromDb('snippets');
+    // 2. filter snippets for everything except snippet.id === id
+    let idExist = false;
+    snippets.map(snippet => {
+      if (snippet.id === id) {
+        idExist = true;
+      }
+    });
+    if (idExist) {
+      const filtered = snippets.filter(snippet => id !== snippet.id);
+      // 3. clears the current json
+      await writeJsonToDb('snippets', {});
+      // 4. write the file
+      await writeJsonToDb('snippets', filtered);
+      return filtered;
+    } else {
+      throw Error('ID Does not exist');
+    }
+  } catch (err) {
+    throw err;
+  }
 };

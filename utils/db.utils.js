@@ -1,12 +1,24 @@
 const fs = require('fs').promises;
 const path = require('path');
 
-exports.readJsonFromDb = async resource => {
-  const dbPath = path.join(__dirname, '..', 'db', `${resource}.json`);
-  return JSON.parse(await fs.readFile(dbPath));
-};
+/**
+ * Gets absolute path to `resource` the db file
+ * @param {string} resource
+ * @returns {string} file path
+ */
+const dbPath = resource => path.join(__dirname, '..', 'db', `${resource}.json`);
 
-exports.writeJsonToDb = async (resource, data) => {
-  const dbPath = path.join(__dirname, '..', 'db', `${resource}.json`);
-  return await fs.writeFile(dbPath, data);
-};
+/**
+ * Reads and parses JSON data from DB
+ * @param {string} resource - resource to fetch
+ * @returns {Promise<Object>} parsed data
+ */
+exports.readJsonFromDb = async resource => JSON.parse(await fs.readFile(dbPath(resource)));
+
+/**
+ * Writes JSON data to DB file
+ * @param {string} resource - resource to write to
+ * @param {Object} data - data to write
+ * @returns {Promise<Void>} void promise
+ */
+exports.writeJsonToDb = (resource, data) => fs.writeFile(dbPath(resource), JSON.stringify(data));
