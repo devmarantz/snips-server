@@ -1,6 +1,6 @@
 const Snippet = require('./models/Snippet.model');
 
-async function testModels() {
+async function testSnippetInsert() {
   // const snippets = await Snippet.select();
   // console.log(snippets);
   try {
@@ -18,4 +18,10 @@ async function testModels() {
   }
 }
 
-testModels();
+async function testSnippetSelect() {
+  const snippets = await Snippet.select();
+  console.log(snippets);
+}
+
+testSnippetSelect();
+// testSnippetInsert();

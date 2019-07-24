@@ -1,6 +1,7 @@
 const fs = require('fs').promises;
 const path = require('path');
 const shortid = require('shortid');
+const { readJsonFromDb, writeJsonToDb } = require('../utils/db.utils');
 
 /**
  * @typedef {Object} Snippet
@@ -24,8 +25,7 @@ exports.insert = async ({ author, code, title, description, language }) => {
   try {
     if (!author || !code || !title || !description || !language) throw Error('Missing Properties!');
     // read snippets.json
-    const dbPath = path.join(__dirname, '..', 'db', 'snippets.json');
-    const snippets = JSON.parse(await fs.readFile(dbPath));
+    const snippets = await readJsonFromDb('snippets');
     // grab data from newSnippet (validate)
     // make newSnippet a proper object
     // generate default data (id, comments, favorites)
@@ -73,3 +73,8 @@ exports.select = async (query = {}) => {
 
 /* Update */
 /* Delete */
+exports.delete = id => {
+  // 1. Read in the db file
+  // 2. filter snippets for everything except snippet.id === id
+  // 3. write the file
+};
