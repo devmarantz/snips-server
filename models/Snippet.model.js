@@ -41,7 +41,7 @@ exports.insert = async ({ author, code, title, description, language }) => {
       favorites: 0,
     });
     // write back to the file
-    await fs.writeFile(dbPath, JSON.stringify(snippets));
+    writeJsonToDb('snippets', JSON.stringify(snippets));
     return snippets[snippets.length - 1];
   } catch (err) {
     console.log(err);
@@ -59,8 +59,7 @@ exports.insert = async ({ author, code, title, description, language }) => {
 exports.select = async (query = {}) => {
   try {
     // 1. Read & Pa the file
-    const dbPath = path.join(__dirname, '..', 'db', 'snippets.json');
-    const snippets = JSON.parse(await fs.readFile(dbPath));
+    const snippets = await readJsonFromDb('snippets');
     // filter snippets with query
     const filtered = snippets.filter(snippet => Object.keys(query).every(key => query[key] === snippet[key]));
     // 3. Return the data

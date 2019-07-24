@@ -9,7 +9,7 @@ async function testSnippetInsert() {
       code: 'code code code',
       title: 'test.js',
       description: 'This works great!',
-      // language: 'javascript',
+      language: 'javascript',
       bogus: 'THIS IS FAKE!',
     });
     console.log(newSnippet);
@@ -23,5 +23,5 @@ async function testSnippetSelect() {
   console.log(snippets);
 }
 
-testSnippetSelect();
-// testSnippetInsert();
+// testSnippetSelect();
+testSnippetInsert();

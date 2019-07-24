@@ -6,7 +6,7 @@ exports.readJsonFromDb = async resource => {
   return JSON.parse(await fs.readFile(dbPath));
 };
 
-exports.writeJsonToDb = async resource => {
+exports.writeJsonToDb = async (resource, data) => {
   const dbPath = path.join(__dirname, '..', 'db', `${resource}.json`);
-  return JSON.parse(await fs.writeFile(dbPath));
+  return await fs.writeFile(dbPath, data);
 };
