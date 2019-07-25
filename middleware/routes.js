@@ -1,15 +1,24 @@
 const express = require('express');
-const Snippet = require('./models/Snippet.model');
+const Snippet = require('../models/Snippet.model');
 
 const router = express.Router();
 
-router.get('/', (req, res) => {
+router.get('/', (req, res, next) => {
+  console.log(`We're in the router`);
   res.send('Welcome to Snips');
+  next();
 });
 
 /* Snippets Route*/
 // POST /api/snippets
-router.post('/api/snippets', async (req, res) => {});
+router.post('/api/snippets', async (req, res) => {
+  try {
+    const newSnippet = await Snippet.insert(req.body);
+    res.send(newSnippet);
+  } catch (err) {
+    res.send(err);
+  }
+});
 // GET /api/snippets
 router.get('/api/snippets', async (req, res) => {
   // 1.get data from Snippets model
@@ -35,7 +44,7 @@ router.patch('/api/snippets/:id', async (req, res) => {});
 router.delete('/api/snippets/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const snippets = await Snippet.delete({ id: `${id}` });
+    const snippets = await Snippet.delete(id);
     res.send(snippets);
   } catch (err) {
     res.send(err);
