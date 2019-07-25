@@ -1,5 +1,3 @@
-const fs = require('fs').promises;
-const path = require('path');
 const shortid = require('shortid');
 const { readJsonFromDb, writeJsonToDb } = require('../utils/db.utils');
 
@@ -58,7 +56,7 @@ exports.insert = async ({ author, code, title, description, language }) => {
  */
 exports.select = async (query = {}) => {
   try {
-    // 1. Read & Pa the file
+    // 1. Read & Parse the file
     const snippets = await readJsonFromDb('snippets');
     // filter snippets with query
     const filtered = snippets.filter(snippet => Object.keys(query).every(key => query[key] === snippet[key]));
@@ -70,29 +68,54 @@ exports.select = async (query = {}) => {
   }
 };
 
-/* Update */
-/* Delete */
+/**
+ *  Updates a snippet
+ * @param {string} id - id of the snippet to update
+ * @param {Snippet} newData - subset of values to update
+ * @returns {Promise<void>}
+ */
+// TODO: Add error handler
+exports.update = async (id, newData) => {
+  // 1. read file
+  const snippets = await readJsonFromDb('snippets');
+  // 2. find the entry with id
+  const updatedSnippets = snippets.map(snippet => {
+    // if it's not the one we want, just return it
+    if (snippet.id !== id) return snippet;
+
+    // loop over keys in new data
+    Object.keys(newData).forEach(key => {
+      // check if snippet has that key and set it
+      if (key in snippet) snippet[key] = newData[key];
+    });
+    return snippet;
+  });
+  // 3. update the snippet with appropriate data (make sure to validate!)
+  await writeJsonToDb('snippets', updatedSnippets);
+  return updatedSnippets;
+  // 4. write the file
+};
+
+/**
+ *  Deletes a snippet
+ * @param {string} id - id of the snippet to delete
+ * @returns {Promise<void>}
+ */
+// TODO: Add error handler
 exports.delete = async id => {
   try {
     // 1. Read in the db file
     const snippets = await readJsonFromDb('snippets');
-    // 2. filter snippets for everything except snippet.id === id
-    let idExist = false;
-    snippets.map(snippet => {
-      if (snippet.id === id) {
-        idExist = true;
-      }
-    });
-    if (idExist) {
-      const filtered = snippets.filter(snippet => id !== snippet.id);
-      // 3. clears the current json
-      await writeJsonToDb('snippets', {});
-      // 4. write the file
-      await writeJsonToDb('snippets', filtered);
-      return filtered;
-    } else {
+    // 2. Check if id exists
+    // 3. filter snippets for everything except snippet.id === id
+    const filtered = snippets.filter(snippet => id !== snippet.id);
+    // 4. write the file
+    // Skips new write if id DNE
+    if (filtered.length === snippets.length) {
       throw Error('ID Does not exist');
     }
+    await writeJsonToDb('snippets', filtered);
+    return filtered;
   } catch (err) {
     throw err;
   }
