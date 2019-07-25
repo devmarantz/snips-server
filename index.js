@@ -1,4 +1,5 @@
 const express = require('express');
+const Snippet = require('./models/Snippet.model');
 
 const app = express();
 
@@ -7,16 +8,31 @@ app.get('/', (req, res) => {
 });
 
 /* Snippets Route*/
-// POST /snippets
-app.post('/snippets', (req, res) => {});
-// GET /snippets
-app.get('/snippets', (req, res) => {});
-// GET /snippets/:id
-app.get('/snippets/:id', (req, res) => {});
-// PATCH /snippets/:id
-app.patch('/snippets/:id', (req, res) => {});
-// DELETE /snippets/:id
-app.delete('/snippets/:id', (req, res) => {});
+// POST /api/snippets
+app.post('/api/snippets', async (req, res) => {});
+// GET /api/snippets
+app.get('/api/snippets', async (req, res) => {
+  // 1.get data from Snippets model
+  const snippets = await Snippet.select();
+  // 2. send that out
+  res.send(snippets);
+});
+// GET /api/snippets/:id
+app.get('/api/snippets/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    // 1.get data from Snippets model
+    const snippets = await Snippet.select({ id: `${id}` });
+    // 2. send that out
+    res.send(snippets);
+  } catch (err) {
+    res.send(err);
+  }
+});
+// PATCH /api/snippets/:id
+app.patch('/api/snippets/:id', async (req, res) => {});
+// DELETE /api/snippets/:id
+app.delete('/api/snippets/:id', async (req, res) => {});
 
 app.listen(5000, () => {
   console.log('Snips server running on Port 5000');

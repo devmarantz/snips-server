@@ -50,7 +50,8 @@ exports.insert = async ({ author, code, title, description, language }) => {
 /* Read */
 /**
  * Selects snippets from db.
- * Can accept optional quer object to filter results.
+ * Can accept optional query object to filter results.
+ * Otherwise returns all snippets
  * @param {Object} {query}
  * @returns {Promise<Object[]>}
  */
