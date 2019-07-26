@@ -1,5 +1,6 @@
 const shortid = require('shortid');
 const { readJsonFromDb, writeJsonToDb } = require('../utils/db.utils');
+const ErrorWithHttpStatus = require('../utils/ErrorWithHttpStatus');
 
 /**
  * @typedef {Object} Snippet
@@ -21,7 +22,8 @@ const { readJsonFromDb, writeJsonToDb } = require('../utils/db.utils');
  */
 exports.insert = async ({ author, code, title, description, language }) => {
   try {
-    if (!author || !code || !title || !description || !language) throw Error('Missing Properties!');
+    if (!author || !code || !title || !description || !language)
+      throw new ErrorWithHttpStatus('Missing Properties', 400);
     // read snippets.json
     const snippets = await readJsonFromDb('snippets');
     // grab data from newSnippet (validate)
@@ -42,8 +44,8 @@ exports.insert = async ({ author, code, title, description, language }) => {
     await writeJsonToDb('snippets', snippets);
     return snippets[snippets.length - 1];
   } catch (err) {
-    console.log(err);
-    throw err;
+    if (err instanceof ErrorWithHttpStatus) throw err;
+    else throw new ErrorWithHttpStatus('Database Error', 500);
   }
 };
 
@@ -64,8 +66,8 @@ exports.select = async (query = {}) => {
     // 3. Return the data
     return filtered;
   } catch (err) {
-    console.log('Error in Snippet model');
-    throw err;
+    if (err instanceof ErrorWithHttpStatus) throw err;
+    else throw new ErrorWithHttpStatus('Database Error', 500);
   }
 };
 
@@ -77,24 +79,29 @@ exports.select = async (query = {}) => {
  */
 // TODO: Add error handler
 exports.update = async (id, newData) => {
-  // 1. read file
-  const snippets = await readJsonFromDb('snippets');
-  // 2. find the entry with id
-  const updatedSnippets = snippets.map(snippet => {
-    // if it's not the one we want, just return it
-    if (snippet.id !== id) return snippet;
+  try {
+    // 1. read file
+    const snippets = await readJsonFromDb('snippets');
+    // 2. find the entry with id
+    const updatedSnippets = snippets.map(snippet => {
+      // if it's not the one we want, just return it
+      if (snippet.id !== id) return snippet;
 
-    // loop over keys in new data
-    Object.keys(newData).forEach(key => {
-      // check if snippet has that key and set it
-      if (key in snippet) snippet[key] = newData[key];
+      // loop over keys in new data
+      Object.keys(newData).forEach(key => {
+        // check if snippet has that key and set it
+        if (key in snippet) snippet[key] = newData[key];
+      });
+      return snippet;
     });
-    return snippet;
-  });
-  // 3. update the snippet with appropriate data (make sure to validate!)
-  await writeJsonToDb('snippets', updatedSnippets);
-  return updatedSnippets;
-  // 4. write the file
+    // 3. update the snippet with appropriate data (make sure to validate!)
+    await writeJsonToDb('snippets', updatedSnippets);
+    return updatedSnippets;
+    // 4. write the file
+  } catch {
+    if (err instanceof ErrorWithHttpStatus) throw err;
+    else throw new ErrorWithHttpStatus('Database Error', 500);
+  }
 };
 
 /**
@@ -113,11 +120,12 @@ exports.delete = async id => {
     // 4. write the file
     // Skips new write if id DNE
     if (filtered.length === snippets.length) {
-      throw Error('ID Does not exist');
+      throw new ErrorWithHttpStatus('ID Does not exist', 400);
     }
     await writeJsonToDb('snippets', filtered);
     return filtered;
   } catch (err) {
-    throw err;
+    if (err instanceof ErrorWithHttpStatus) throw err;
+    else throw new ErrorWithHttpStatus('Database Error', 500);
   }
 };

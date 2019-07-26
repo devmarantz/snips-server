@@ -3,7 +3,7 @@ const Snippet = require('../models/Snippet.model');
 const {
   createSnippet,
   getAllSnippets,
-  getOneSnippet,
+  getSnippetByID,
   updateSnippet,
   deleteSnippet,
 } = require('../controllers/snippets.controller');
@@ -23,7 +23,7 @@ router.post('/api/snippets', createSnippet);
 // GET /api/snippets
 router.get('/api/snippets', getAllSnippets);
 // GET /api/snippets/:id
-router.get('/api/snippets/:id', getOneSnippet);
+router.get('/api/snippets/:id', getSnippetByID);
 // PATCH /api/snippets/:id
 router.patch('/api/snippets/:id', updateSnippet);
 // DELETE /api/snippets/:id
