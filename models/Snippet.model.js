@@ -5,7 +5,7 @@ const ErrorWithHttpStatus = require('../utils/ErrorWithHttpStatus');
 /**
  * @typedef {Object} Snippet
  * @property {string} id
- * @property {string} author
+ * @property {string} author 
  * @property {string} code
  * @property {string} title
  * @property {string} description
