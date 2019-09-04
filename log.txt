@@ -391,3 +391,7 @@ GET  /api/snippets  1567634617652
 DELETE  /api/snippets/1  1567634642323
 
 DELETE  /api/snippets/1  1567634770568
+
+POST  /api/snippets  1567636230340
+
+GET  /api/snippets  1567636237709

@@ -23,27 +23,29 @@ const db = require('../db/index');
  */
 exports.insert = async ({ author, code, title, description, language }) => {
   try {
-    if (!author || !code || !title || !description || !language)
-      throw new ErrorWithHttpStatus('Missing Properties', 400);
-    // read snippets.json
-    const snippets = await readJsonFromDb('snippets');
-    // grab data from newSnippet (validate)
-    // make newSnippet a proper object
-    // generate default data (id, comments, favorites)
-    // push that object into snippets
-    snippets.push({
-      id: shortid.generate(),
-      author,
-      code,
-      title,
-      description,
-      language,
-      comments: [],
-      favorites: 0,
-    });
-    // write back to the file
-    await writeJsonToDb('snippets', snippets);
-    return snippets[snippets.length - 1];
+    const result = await db.query('INSERT INTO snippet (code, title, description, author, language) VALUES ($1, $2, $3, $4, $5)', [code, title, description, author, language]);
+    return result;
+    // if (!author || !code || !title || !description || !language)
+    //   throw new ErrorWithHttpStatus('Missing Properties', 400);
+    // // read snippets.json
+    // const snippets = await readJsonFromDb('snippets');
+    // // grab data from newSnippet (validate)
+    // // make newSnippet a proper object
+    // // generate default data (id, comments, favorites)
+    // // push that object into snippets
+    // snippets.push({
+    //   id: shortid.generate(),
+    //   author,
+    //   code,
+    //   title,
+    //   description,
+    //   language,
+    //   comments: [],
+    //   favorites: 0,
+    // });
+    // // write back to the file
+    // await writeJsonToDb('snippets', snippets);
+    // return snippets[snippets.length - 1];
   } catch (err) {
     if (err instanceof ErrorWithHttpStatus) throw err;
     else throw new ErrorWithHttpStatus('Database Error', 500);
