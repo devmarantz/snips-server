@@ -86,24 +86,27 @@ exports.select = async (query = {}) => {
 // TODO: Add error handler
 exports.update = async (id, newData) => {
   try {
-    // 1. read file
-    const snippets = await readJsonFromDb('snippets');
-    // 2. find the entry with id
-    const updatedSnippets = snippets.map(snippet => {
-      // if it's not the one we want, just return it
-      if (snippet.id !== id) return snippet;
+    const { code, title, description, author, language } = newData;
+    const result = await db.query('UPDATE snippet SET code = $1, title = $2, description = $3, author = $4, language = $5 WHERE id = $6', [code, title, description, author, language, id]);
+    return result;
+    // // 1. read file
+    // const snippets = await readJsonFromDb('snippets');
+    // // 2. find the entry with id
+    // const updatedSnippets = snippets.map(snippet => {
+    //   // if it's not the one we want, just return it
+    //   if (snippet.id !== id) return snippet;
 
-      // loop over keys in new data
-      Object.keys(newData).forEach(key => {
-        // check if snippet has that key and set it
-        if (key in snippet) snippet[key] = newData[key];
-      });
-      return snippet;
-    });
-    // 3. update the snippet with appropriate data (make sure to validate!)
-    await writeJsonToDb('snippets', updatedSnippets);
-    return updatedSnippets;
-    // 4. write the file
+    //   // loop over keys in new data
+    //   Object.keys(newData).forEach(key => {
+    //     // check if snippet has that key and set it
+    //     if (key in snippet) snippet[key] = newData[key];
+    //   });
+    //   return snippet;
+    // });
+    // // 3. update the snippet with appropriate data (make sure to validate!)
+    // await writeJsonToDb('snippets', updatedSnippets);
+    // return updatedSnippets;
+    // // 4. write the file
   } catch {
     if (err instanceof ErrorWithHttpStatus) throw err;
     else throw new ErrorWithHttpStatus('Database Error', 500);
