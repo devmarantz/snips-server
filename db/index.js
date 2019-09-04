@@ -3,19 +3,19 @@ const pg = require('pg');
 
 const {DB_USER, DB_PW, DB_HOST, DB_PORT, DB_NAME } = process.env;
 const connectionString = `postgresql://${DB_USER}:${DB_PW}@${DB_HOST}:${DB_PORT}/${DB_NAME}`;
-const client = new pg.Client(connectionString);
+const pool = new pg.Pool({connectionString});
 
 // opens a single connection to the database
-client.connect();
+// pool.connect();
 
 // run a select query
-client
+pool
   .query('SELECT * FROM snippet')
   .then(res => {
-    console.log(res.rows);
+    console.table(res.rows);
   }).catch(err => {
     console.error(err);
   })
   .finally(() => {
-    client.end();
+    pool.end();
   });
