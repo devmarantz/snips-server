@@ -116,18 +116,24 @@ exports.update = async (id, newData) => {
 // TODO: Add error handler
 exports.delete = async id => {
   try {
-    // 1. Read in the db file
-    const snippets = await readJsonFromDb('snippets');
-    // 2. Check if id exists
-    // 3. filter snippets for everything except snippet.id === id
-    const filtered = snippets.filter(snippet => id !== snippet.id);
-    // 4. write the file
-    // Skips new write if id DNE
-    if (filtered.length === snippets.length) {
+    const result = await db.query(`DELETE FROM snippet WHERE id = $1`, [id]);
+    if (result.rowCount === 0) {
       throw new ErrorWithHttpStatus('ID Does not exist', 400);
     }
-    await writeJsonToDb('snippets', filtered);
-    return filtered;
+    return result;
+    // Old Code
+    // // 1. Read in the db file
+    // const snippets = await readJsonFromDb('snippets');
+    // // 2. Check if id exists
+    // // 3. filter snippets for everything except snippet.id === id
+    // const filtered = snippets.filter(snippet => id !== snippet.id);
+    // // 4. write the file
+    // // Skips new write if id DNE
+    // if (filtered.length === snippets.length) {
+    //   throw new ErrorWithHttpStatus('ID Does not exist', 400);
+    // }
+    // await writeJsonToDb('snippets', filtered);
+    // return filtered;
   } catch (err) {
     if (err instanceof ErrorWithHttpStatus) throw err;
     else throw new ErrorWithHttpStatus('Database Error', 500);
