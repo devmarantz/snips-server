@@ -1,6 +1,7 @@
 const shortid = require('shortid');
 const { readJsonFromDb, writeJsonToDb } = require('../utils/db.utils');
 const ErrorWithHttpStatus = require('../utils/ErrorWithHttpStatus');
+const db = require('../db/index');
 
 /**
  * @typedef {Object} Snippet
@@ -59,12 +60,15 @@ exports.insert = async ({ author, code, title, description, language }) => {
  */
 exports.select = async (query = {}) => {
   try {
-    // 1. Read & Parse the file
-    const snippets = await readJsonFromDb('snippets');
-    // filter snippets with query
-    const filtered = snippets.filter(snippet => Object.keys(query).every(key => query[key] === snippet[key]));
-    // 3. Return the data
-    return filtered;
+    const result = await db.query('SELECT * FROM snippet');
+    return result;
+    // Old code
+    // // 1. Read & Parse the file
+    // const snippets = await readJsonFromDb('snippets');
+    // // filter snippets with query
+    // const filtered = snippets.filter(snippet => Object.keys(query).every(key => query[key] === snippet[key]));
+    // // 3. Return the data
+    // return filtered;
   } catch (err) {
     if (err instanceof ErrorWithHttpStatus) throw err;
     else throw new ErrorWithHttpStatus('Database Error', 500);
