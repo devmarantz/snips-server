@@ -67,21 +67,14 @@ exports.select = async (query = {}) => {
       var values = Object.values(query);
       var params = [];
       var queries = [];
-      var paramNum = 1;
       for(var i = 1; i <= keys.length ; i++) {
-        params.push('$' + paramNum + ' = $' + (paramNum+1));
-        paramNum = paramNum + 2;
-        queries.push(`${keys[i-1]}`);
+        params.push(keys[i-1] + ' = $' + (i));
         queries.push(`${values[i-1]}`);
       }
-      console.log(params);
-      console.log(queries);
       var queryText = 'SELECT * FROM snippet WHERE ' + params.join(' AND ');
-      console.log(queryText);
       const result = await db.query(queryText, queries)
       return result;
     } else {
-      console.log('there are no queries');
       const result = await db.query('SELECT * FROM snippet');
       return result;
     }
