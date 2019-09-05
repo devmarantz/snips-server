@@ -1,4 +1,5 @@
 const shortid = require('shortid');
+const format = require('pg-format');
 const { readJsonFromDb, writeJsonToDb } = require('../utils/db.utils');
 const ErrorWithHttpStatus = require('../utils/ErrorWithHttpStatus');
 const db = require('../db/index');
@@ -65,22 +66,34 @@ exports.insert = async ({ author, code, title, description, language }) => {
  */
 exports.select = async (query = {}) => {
   try {
-    if(Object.keys(query).length > 0){
-      var keys = Object.keys(query);
-      var values = Object.values(query);
-      var params = [];
-      var queries = [];
-      for(var i = 1; i <= keys.length ; i++) {
-        params.push(keys[i-1] + ' = $' + (i));
-        queries.push(`${values[i-1]}`);
-      }
-      var queryText = 'SELECT * FROM snippet WHERE ' + params.join(' AND ');
-      const result = await db.query(queryText, queries)
-      return result.rows;
-    } else {
-      const result = await db.query('SELECT * FROM snippet');
-      return result.rows;
-    }
+    const clauses = Object.keys(query)
+      .map((key,i) => `%I = $${i + 1}`)
+      .join(' AND ');
+    console.log(clauses);
+    const formattedSelect = format(
+      `SELECT * FROM snippet ${clauses.length ? `WHERE ${clauses}` : ''}`,
+      ...Object.keys(query)
+    );
+    const result = await db.query(formattedSelect, Object.values(query));
+    return result.rows;
+    // // -----------Old Code----------------
+    // if(Object.keys(query).length > 0){
+ 
+    //   // var keys = Object.keys(query);
+    //   // var values = Object.values(query);
+    //   // var params = [];
+    //   // var queries = [];
+    //   // for(var i = 1; i <= keys.length ; i++) {
+    //   //   params.push(keys[i-1] + ' = $' + (i));
+    //   //   queries.push(`${values[i-1]}`);
+    //   // }
+    //   // var queryText = 'SELECT * FROM snippet WHERE ' + params.join(' AND ');
+    //   // const result = await db.query(queryText, queries)
+    //   // return result.rows;
+    // } else {
+    //   const result = await db.query('SELECT * FROM snippet');
+    //   return result.rows;
+    // }
     // Old code
     // // 1. Read & Parse the file
     // const snippets = await readJsonFromDb('snippets');
