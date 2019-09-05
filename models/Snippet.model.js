@@ -76,31 +76,6 @@ exports.select = async (query = {}) => {
     );
     const result = await db.query(formattedSelect, Object.values(query));
     return result.rows;
-    // // -----------Old Code----------------
-    // if(Object.keys(query).length > 0){
- 
-    //   // var keys = Object.keys(query);
-    //   // var values = Object.values(query);
-    //   // var params = [];
-    //   // var queries = [];
-    //   // for(var i = 1; i <= keys.length ; i++) {
-    //   //   params.push(keys[i-1] + ' = $' + (i));
-    //   //   queries.push(`${values[i-1]}`);
-    //   // }
-    //   // var queryText = 'SELECT * FROM snippet WHERE ' + params.join(' AND ');
-    //   // const result = await db.query(queryText, queries)
-    //   // return result.rows;
-    // } else {
-    //   const result = await db.query('SELECT * FROM snippet');
-    //   return result.rows;
-    // }
-    // Old code
-    // // 1. Read & Parse the file
-    // const snippets = await readJsonFromDb('snippets');
-    // // filter snippets with query
-    // const filtered = snippets.filter(snippet => Object.keys(query).every(key => query[key] === snippet[key]));
-    // // 3. Return the data
-    // return filtered;
   } catch (err) {
     console.log(err);
     if (err instanceof ErrorWithHttpStatus) throw err;
