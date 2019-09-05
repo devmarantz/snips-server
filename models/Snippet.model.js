@@ -23,6 +23,9 @@ const db = require('../db/index');
  */
 exports.insert = async ({ author, code, title, description, language }) => {
   try {
+    if(!code || !title || !description || !author || !language){
+      throw new ErrorWithHttpStatus('Missing Properties', 400);
+    }
     const result = await db.query('INSERT INTO snippet (code, title, description, author, language) VALUES ($1, $2, $3, $4, $5)', [code, title, description, author, language]);
     return result;
     // if (!author || !code || !title || !description || !language)
