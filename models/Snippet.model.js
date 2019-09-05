@@ -27,7 +27,7 @@ exports.insert = async ({ author, code, title, description, language }) => {
       throw new ErrorWithHttpStatus('Missing Properties', 400);
     }
     const result = await db.query('INSERT INTO snippet (code, title, description, author, language) VALUES ($1, $2, $3, $4, $5)', [code, title, description, author, language]);
-    return result;
+    return result.rows;
     // if (!author || !code || !title || !description || !language)
     //   throw new ErrorWithHttpStatus('Missing Properties', 400);
     // // read snippets.json
@@ -76,10 +76,10 @@ exports.select = async (query = {}) => {
       }
       var queryText = 'SELECT * FROM snippet WHERE ' + params.join(' AND ');
       const result = await db.query(queryText, queries)
-      return result;
+      return result.rows;
     } else {
       const result = await db.query('SELECT * FROM snippet');
-      return result;
+      return result.rows;
     }
     // Old code
     // // 1. Read & Parse the file
@@ -105,8 +105,24 @@ exports.select = async (query = {}) => {
 exports.update = async (id, newData) => {
   try {
     const { code, title, description, author, language } = newData;
-    const result = await db.query('UPDATE snippet SET code = $1, title = $2, description = $3, author = $4, language = $5 WHERE id = $6', [code, title, description, author, language, id]);
-    return result;
+    var keys = Object.keys(newData);
+    var values = Object.values(newData);
+    var params = [];
+    var queries = [];
+    for(var i = 1; i <= keys.length ; i++) {
+      params.push(keys[i-1] + ' = $' + (i));
+      queries.push(`${values[i-1]}`);
+    }
+    var queryText = 'UPDATE snippet SET ' + params.join(', ') + ' WHERE id = ' + id;
+    console.log(queryText);
+    console.log(queries);
+    const result = await db.query(queryText, queries)
+    return result.rows;
+
+    // // Old Code
+    // const result = await db.query('UPDATE snippet SET code = $1, title = $2, description = $3, author = $4, language = $5 WHERE id = $6', [code, title, description, author, language, id]);
+    // return result;
+    // -----------------
     // // 1. read file
     // const snippets = await readJsonFromDb('snippets');
     // // 2. find the entry with id
