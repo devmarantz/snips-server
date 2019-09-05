@@ -76,6 +76,13 @@ exports.select = async (query = {}) => {
     );
     const result = await db.query(formattedSelect, Object.values(query));
     return result.rows;
+    // Old code
+    // // 1. Read & Parse the file
+    // const snippets = await readJsonFromDb('snippets');
+    // // filter snippets with query
+    // const filtered = snippets.filter(snippet => Object.keys(query).every(key => query[key] === snippet[key]));
+    // // 3. Return the data
+    // return filtered;
   } catch (err) {
     console.log(err);
     if (err instanceof ErrorWithHttpStatus) throw err;
