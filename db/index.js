@@ -2,9 +2,9 @@ require('dotenv').config();
 const pg = require('pg');
 
 // pick variables from env
-const {DB_USER, DB_PW, DB_HOST, DB_PORT, DB_NAME } = process.env;
-const connectionString = `postgresql://${DB_USER}:${DB_PW}@${DB_HOST}:${DB_PORT}/${DB_NAME}`;
-const pool = new pg.Pool({connectionString});
+const pool = new pg.Pool({
+  connectionString: process.env.DATABASE_URL,
+});
 
 module.exports = pool;
 // run a select query
