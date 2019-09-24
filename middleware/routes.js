@@ -1,40 +1,27 @@
 const express = require('express');
-const Snippet = require('../models/Snippet.model');
-const {
-  createSnippet,
-  getAllSnippets,
-  getSnippetByID,
-  updateSnippet,
-  deleteSnippet,
-} = require('../controllers/snippets.controller');
-const {
-  signup,
-  login
-} = require('../controllers/authors.controller');
+const snippets = require('../controllers/snippets.controller');
+const authors = require('../controllers/authors.controller');
+const validate = require('./validate');
 
 const router = express.Router();
 
-router.get('/', (req, res, next) => {
-  console.log(`We're in the router`);
-  res.send('Welcome to Snips');
-  next();
+router.get('/', (request, response, next) => {
+  response.send('Welcome to Snips!');
 });
 
-/* Snippets Route*/
-// POST /api/snippets
-router.post('/api/snippets', createSnippet);
+router.get('/api', (request, response) => {
+  response.send('Welcome to the Snips API!');
+});
 
-// GET /api/snippets
-router.get('/api/snippets', getAllSnippets);
-// GET /api/snippets/:id
-router.get('/api/snippets/:id', getSnippetByID);
-// PATCH /api/snippets/:id
-router.patch('/api/snippets/:id', updateSnippet);
-// DELETE /api/snippets/:id
-router.delete('/api/snippets/:id', deleteSnippet);
+/* Snippets routes */
+router.post('/api/snippets', validate, snippets.createSnippet);
+router.get('/api/snippets', snippets.getAllSnippets);
+router.get('/api/snippets/:id', snippets.getSnippetById);
+router.patch('/api/snippets/:id', validate, snippets.update);
+router.delete('/api/snippets/:id', validate, snippets.delete);
 
 /* Author routes */
-router.post('/api/signup', signup);
-router.post('/api/login', login);
+router.post('/api/signup', authors.signup);
+router.post('/api/login', authors.login);
 
 module.exports = router;
