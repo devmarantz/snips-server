@@ -17,8 +17,8 @@ router.get('/api', (request, response) => {
 router.post('/api/snippets', validate, snippets.createSnippet);
 router.get('/api/snippets', snippets.getAllSnippets);
 router.get('/api/snippets/:id', snippets.getSnippetById);
-router.patch('/api/snippets/:id', validate, snippets.update);
-router.delete('/api/snippets/:id', validate, snippets.delete);
+router.patch('/api/snippets/:id', validate, snippets.updateSnippet);
+router.delete('/api/snippets/:id', validate, snippets.deleteSnippet);
 
 /* Author routes */
 router.post('/api/signup', authors.signup);
