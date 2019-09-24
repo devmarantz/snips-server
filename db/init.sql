@@ -1,29 +1,40 @@
 DROP TABLE IF EXISTS snippet;
+DROP TABLE IF EXISTS author;
+--
+CREATE TABLE author (name TEXT PRIMARY KEY, password TEXT);
 CREATE TABLE snippet (
   id SERIAL PRIMARY KEY,
   code TEXT,
   title TEXT,
   description TEXT,
   favorites INT DEFAULT 0,
-  author TEXT,
+  -- establish snippet-author relationship
+  author TEXT REFERENCES author,
   language TEXT
 );
-
--- Seed data
+-- Seed author data
 INSERT INTO
-  snippet (code,title, description, language, author)
-VALUE
+  author (name, password)
+VALUES
+  ('dmarantz', 'Password1'),
+  ('marantz', 'Password1');
+
+
+-- Seed snippet data
+INSERT INTO
+  snippet (code, title, description, language, author)
+VALUES
   (
     'const america = 1776',
     'freedom',
-    'I do declare a const',
-    'JS',
-    'Devon'
+    'I declared a const',
+    'JavaScript',
+    'Dandy'
   ),
   (
-    '4 * 4',
-    'Multiplicaiton',
-    'Multiplication is square',
+    '4 + 4',
+    'addition',
+    'This is how you add',
     'Algebra',
-    'Devon'
+    'Scott'
   );
