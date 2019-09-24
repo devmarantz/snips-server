@@ -1,12 +1,13 @@
 require('dotenv').config();
 const request = require('supertest');
 const app = require('../app');
+const dbInit = require('../db/init');
 
-describe('Test', ()=> {
-  it('should run a test', ()=>{
-    console.log(process.env.TEST_DATABASE_URL);
-  });
-});
+beforeAll(async()=>{
+  await dbInit.createTables();
+  await dbInit.seedAuthors();
+  await dbInit.seedAuthors();
+})
 
 describe('Snippets', ()=> {
   describe('GET /api/snips', ()=> {
