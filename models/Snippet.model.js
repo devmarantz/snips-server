@@ -69,7 +69,7 @@ exports.select = async (query = {}) => {
     const clauses = Object.keys(query)
       .map((key,i) => `%I = $${i + 1}`)
       .join(' AND ');
-    console.log(clauses);
+    // console.log(clauses);
     const formattedSelect = format(
       `SELECT * FROM snippet ${clauses.length ? `WHERE ${clauses}` : ''}`,
       ...Object.keys(query)
