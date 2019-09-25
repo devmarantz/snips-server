@@ -1,6 +1,6 @@
 # Snips ✂️ Backend
 
-# Build Status For Travis
+## Build Status For Travis
 [![Build Status](https://travis-ci.org/devmarantz/snips-server.svg?branch=master)](https://travis-ci.org/devmarantz/snips-server)
 
 Backend for Snips app.
