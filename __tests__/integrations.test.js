@@ -23,7 +23,7 @@ describe('Snippets', ()=> {
       // no errors
       expect(response.error).toBeFalsy();
       //  status code should be 200
-      expect(response.status).toBe(200);
+      expect(response.status).toBe(200); 
       //  matches the data directly
       expect(response.body).toMatchSnapshot()
     });

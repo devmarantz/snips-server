@@ -16,8 +16,8 @@ CREATE TABLE snippet (
 INSERT INTO
   author (name, password)
 VALUES
-  ('dmarantz', 'Password1'),
-  ('marantz', 'Password1');
+  ('dmarantz', '$1'),
+  ('marantz', '$1');
 
 
 -- Seed snippet data
