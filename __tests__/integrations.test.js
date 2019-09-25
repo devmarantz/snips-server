@@ -19,7 +19,7 @@ describe('Snippets', ()=> {
         .expect(200);
       // console.log(response.body);
       //  expect two rows
-      expect(response.body.length).toBe(2);
+      expect(response.body.length).toBe();
       // no errors
       expect(response.error).toBeFalsy();
       //  status code should be 200
